@@ -1,0 +1,649 @@
+openapi: 3.0.3
+info:
+  title: Attendance Management System API
+  description: >
+    REST API for the GPS-enabled Attendance Management mobile application.
+    Built with Laravel 12 and Laravel Sanctum token authentication.
+  version: "1.0.0"
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Local development
+tags:
+  - name: Auth
+  - name: Profile
+  - name: Attendance
+  - name: Leave
+  - name: Regularization
+  - name: Notifications
+  - name: Manager
+  - name: Admin
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum Token
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        message: { type: string }
+        data: {}
+    User:
+      type: object
+      properties:
+        id: { type: integer }
+        employee_id: { type: string }
+        name: { type: string }
+        email: { type: string }
+        phone: { type: string }
+        role: { type: string, enum: [super_admin, manager, employee] }
+        department_id: { type: integer, nullable: true }
+        designation_id: { type: integer, nullable: true }
+        manager_id: { type: integer, nullable: true }
+        office_id: { type: integer, nullable: true }
+        joining_date: { type: string, format: date }
+        status: { type: string, enum: [active, disabled] }
+    Attendance:
+      type: object
+      properties:
+        id: { type: integer }
+        user_id: { type: integer }
+        date: { type: string, format: date }
+        time_in: { type: string, format: date-time, nullable: true }
+        time_out: { type: string, format: date-time, nullable: true }
+        working_hours: { type: number, nullable: true }
+        status: { type: string, enum: [present, absent, late, half_day, on_leave, holiday, weekend] }
+    Leave:
+      type: object
+      properties:
+        id: { type: integer }
+        user_id: { type: integer }
+        leave_type_id: { type: integer }
+        start_date: { type: string, format: date }
+        end_date: { type: string, format: date }
+        total_days: { type: number }
+        reason: { type: string }
+        status: { type: string, enum: [pending, manager_approved, approved, rejected, cancelled] }
+    Regularization:
+      type: object
+      properties:
+        id: { type: integer }
+        user_id: { type: integer }
+        attendance_date: { type: string, format: date }
+        requested_time_in: { type: string, format: date-time, nullable: true }
+        requested_time_out: { type: string, format: date-time, nullable: true }
+        reason: { type: string }
+        status: { type: string, enum: [pending, approved, rejected] }
+
+security:
+  - bearerAuth: []
+
+paths:
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Authenticate and receive an API token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password, device_id]
+              properties:
+                email: { type: string }
+                password: { type: string }
+                device_id: { type: string }
+                device_name: { type: string }
+                platform: { type: string, enum: [ios, android] }
+                os_version: { type: string }
+                app_version: { type: string }
+                is_rooted_or_jailbroken: { type: boolean }
+                fcm_token: { type: string }
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ApiResponse' }
+        '403':
+          description: Device pending approval or account disabled
+        '422':
+          description: Invalid credentials
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Revoke current access token
+      responses:
+        '200': { description: Logged out }
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Get authenticated user profile
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+
+  /auth/change-password:
+    post:
+      tags: [Auth]
+      summary: Change password (authenticated)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [current_password, new_password]
+              properties:
+                current_password: { type: string }
+                new_password: { type: string }
+      responses:
+        '200': { description: Password changed }
+
+  /auth/forgot-password:
+    post:
+      tags: [Auth]
+      summary: Send password reset link
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties: { email: { type: string } }
+      responses:
+        '200': { description: Reset link sent }
+
+  /auth/reset-password:
+    post:
+      tags: [Auth]
+      summary: Reset password using emailed token
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, email, password]
+              properties:
+                token: { type: string }
+                email: { type: string }
+                password: { type: string }
+      responses:
+        '200': { description: Password reset }
+
+  /profile:
+    get:
+      tags: [Profile]
+      summary: Get own profile
+      responses:
+        '200': { description: OK }
+    put:
+      tags: [Profile]
+      summary: Update own profile
+      responses:
+        '200': { description: Updated }
+
+  /profile/avatar:
+    post:
+      tags: [Profile]
+      summary: Upload profile picture
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatar: { type: string, format: binary }
+      responses:
+        '200': { description: Avatar updated }
+
+  /profile/fcm-token:
+    post:
+      tags: [Profile]
+      summary: Register push notification token
+      responses:
+        '200': { description: Token registered }
+
+  /profile/devices:
+    get:
+      tags: [Profile]
+      summary: List own registered devices
+      responses:
+        '200': { description: OK }
+
+  /attendance/time-in:
+    post:
+      tags: [Attendance]
+      summary: Mark Time In (GPS, geofence, device & anti-fraud checks enforced)
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [latitude, longitude, device_id]
+              properties:
+                latitude: { type: number, format: float }
+                longitude: { type: number, format: float }
+                address: { type: string }
+                device_id: { type: string }
+                device_name: { type: string }
+                platform: { type: string }
+                os_version: { type: string }
+                app_version: { type: string }
+                is_rooted_or_jailbroken: { type: boolean }
+                is_mock_location: { type: boolean }
+                device_timestamp: { type: string, format: date-time }
+                selfie: { type: string, format: binary }
+      responses:
+        '200':
+          description: Time In marked
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Attendance' }
+        '422':
+          description: Validation failed (outside geofence, mock GPS, rooted device, device not approved, etc.)
+
+  /attendance/time-out:
+    post:
+      tags: [Attendance]
+      summary: Mark Time Out (same security validations as Time In)
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [latitude, longitude, device_id]
+      responses:
+        '200': { description: Time Out marked }
+
+  /attendance/today:
+    get:
+      tags: [Attendance]
+      summary: Get today's attendance record
+      responses:
+        '200': { description: OK }
+
+  /attendance/history:
+    get:
+      tags: [Attendance]
+      summary: Get attendance history (daily/weekly/monthly via from/to filters)
+      parameters:
+        - { name: from, in: query, schema: { type: string, format: date } }
+        - { name: to, in: query, schema: { type: string, format: date } }
+        - { name: status, in: query, schema: { type: string } }
+      responses:
+        '200': { description: OK }
+
+  /attendance/calendar:
+    get:
+      tags: [Attendance]
+      summary: Get calendar view data (present/absent/leave/holiday/late per day)
+      parameters:
+        - { name: month, in: query, schema: { type: integer } }
+        - { name: year, in: query, schema: { type: integer } }
+      responses:
+        '200': { description: OK }
+
+  /leaves/types:
+    get:
+      tags: [Leave]
+      summary: List active leave types
+      responses:
+        '200': { description: OK }
+
+  /leaves/balance:
+    get:
+      tags: [Leave]
+      summary: Get own leave balance for current year
+      responses:
+        '200': { description: OK }
+
+  /leaves:
+    get:
+      tags: [Leave]
+      summary: List own leave requests
+      parameters:
+        - { name: status, in: query, schema: { type: string } }
+      responses:
+        '200': { description: OK }
+    post:
+      tags: [Leave]
+      summary: Apply for leave
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [leave_type_id, start_date, end_date, reason]
+              properties:
+                leave_type_id: { type: integer }
+                start_date: { type: string, format: date }
+                end_date: { type: string, format: date }
+                reason: { type: string }
+                attachment: { type: string, format: binary }
+      responses:
+        '201':
+          description: Leave submitted
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Leave' }
+
+  /leaves/{leave}:
+    get:
+      tags: [Leave]
+      summary: Get leave request detail
+      parameters: [{ name: leave, in: path, required: true, schema: { type: integer } }]
+      responses:
+        '200': { description: OK }
+
+  /leaves/{leave}/cancel:
+    patch:
+      tags: [Leave]
+      summary: Cancel own pending leave request
+      parameters: [{ name: leave, in: path, required: true, schema: { type: integer } }]
+      responses:
+        '200': { description: Cancelled }
+
+  /regularizations:
+    get:
+      tags: [Regularization]
+      summary: List own regularization requests
+      responses:
+        '200': { description: OK }
+    post:
+      tags: [Regularization]
+      summary: Submit a missed attendance correction request
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [attendance_date, reason]
+              properties:
+                attendance_date: { type: string, format: date }
+                requested_time_in: { type: string, format: date-time }
+                requested_time_out: { type: string, format: date-time }
+                reason: { type: string }
+                attachment: { type: string, format: binary }
+      responses:
+        '201':
+          description: Submitted
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Regularization' }
+
+  /notifications:
+    get:
+      tags: [Notifications]
+      summary: List notifications
+      responses:
+        '200': { description: OK }
+
+  /notifications/unread-count:
+    get:
+      tags: [Notifications]
+      summary: Get unread notification count
+      responses:
+        '200': { description: OK }
+
+  /notifications/{id}/read:
+    patch:
+      tags: [Notifications]
+      summary: Mark a notification as read
+      parameters: [{ name: id, in: path, required: true, schema: { type: string } }]
+      responses:
+        '200': { description: Marked read }
+
+  /notifications/read-all:
+    patch:
+      tags: [Notifications]
+      summary: Mark all notifications as read
+      responses:
+        '200': { description: All marked read }
+
+  /employee/dashboard:
+    get:
+      tags: [Profile]
+      summary: Employee dashboard summary
+      responses:
+        '200': { description: OK }
+
+  /departments:
+    get:
+      tags: [Profile]
+      summary: List departments
+      responses: { '200': { description: OK } }
+
+  /designations:
+    get:
+      tags: [Profile]
+      summary: List designations
+      responses: { '200': { description: OK } }
+
+  /offices:
+    get:
+      tags: [Profile]
+      summary: List office/geofence locations
+      responses: { '200': { description: OK } }
+
+  /holidays:
+    get:
+      tags: [Profile]
+      summary: List company holidays
+      responses: { '200': { description: OK } }
+
+  /manager/dashboard:
+    get:
+      tags: [Manager]
+      summary: Manager dashboard summary
+      responses: { '200': { description: OK } }
+
+  /manager/team:
+    get:
+      tags: [Manager]
+      summary: List assigned employees
+      responses: { '200': { description: OK } }
+
+  /manager/team-attendance:
+    get:
+      tags: [Manager]
+      summary: View team attendance for a given date
+      parameters: [{ name: date, in: query, schema: { type: string, format: date } }]
+      responses: { '200': { description: OK } }
+
+  /manager/leaves:
+    get:
+      tags: [Manager]
+      summary: List team leave requests
+      responses: { '200': { description: OK } }
+
+  /manager/leaves/{leave}/review:
+    patch:
+      tags: [Manager]
+      summary: Approve or reject a team member's leave request
+      parameters: [{ name: leave, in: path, required: true, schema: { type: integer } }]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action]
+              properties:
+                action: { type: string, enum: [approve, reject] }
+                remarks: { type: string }
+      responses: { '200': { description: Reviewed } }
+
+  /manager/regularizations:
+    get:
+      tags: [Manager]
+      summary: List pending regularization requests for team
+      responses: { '200': { description: OK } }
+
+  /manager/regularizations/{regularization}/review:
+    patch:
+      tags: [Manager]
+      summary: Approve or reject a regularization request
+      parameters: [{ name: regularization, in: path, required: true, schema: { type: integer } }]
+      responses: { '200': { description: Reviewed } }
+
+  /admin/dashboard:
+    get:
+      tags: [Admin]
+      summary: Admin dashboard summary (headcount, present/absent/late, etc.)
+      responses: { '200': { description: OK } }
+
+  /admin/users:
+    get:
+      tags: [Admin]
+      summary: List/search/filter employees
+      parameters:
+        - { name: search, in: query, schema: { type: string } }
+        - { name: role, in: query, schema: { type: string } }
+        - { name: department_id, in: query, schema: { type: integer } }
+        - { name: status, in: query, schema: { type: string } }
+      responses: { '200': { description: OK } }
+    post:
+      tags: [Admin]
+      summary: Create a new employee account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [employee_id, name, email, password, role]
+      responses: { '201': { description: Created } }
+
+  /admin/users/{user}:
+    get:
+      tags: [Admin]
+      summary: Get employee detail
+      parameters: [{ name: user, in: path, required: true, schema: { type: integer } }]
+      responses: { '200': { description: OK } }
+    put:
+      tags: [Admin]
+      summary: Update employee
+      parameters: [{ name: user, in: path, required: true, schema: { type: integer } }]
+      responses: { '200': { description: Updated } }
+
+  /admin/users/{user}/disable:
+    patch:
+      tags: [Admin]
+      summary: Disable employee account
+      parameters: [{ name: user, in: path, required: true, schema: { type: integer } }]
+      responses: { '200': { description: Disabled } }
+
+  /admin/users/{user}/enable:
+    patch:
+      tags: [Admin]
+      summary: Re-enable employee account
+      parameters: [{ name: user, in: path, required: true, schema: { type: integer } }]
+      responses: { '200': { description: Enabled } }
+
+  /admin/users/{user}/assign-manager:
+    patch:
+      tags: [Admin]
+      summary: Assign a manager to an employee
+      parameters: [{ name: user, in: path, required: true, schema: { type: integer } }]
+      responses: { '200': { description: Assigned } }
+
+  /admin/users/{user}/assign-department:
+    patch:
+      tags: [Admin]
+      summary: Assign department/designation to an employee
+      parameters: [{ name: user, in: path, required: true, schema: { type: integer } }]
+      responses: { '200': { description: Assigned } }
+
+  /admin/devices:
+    get:
+      tags: [Admin]
+      summary: List devices (optionally filter status=pending)
+      parameters: [{ name: status, in: query, schema: { type: string } }]
+      responses: { '200': { description: OK } }
+
+  /admin/devices/{device}/approve:
+    patch:
+      tags: [Admin]
+      summary: Approve a device for use (device binding)
+      parameters: [{ name: device, in: path, required: true, schema: { type: integer } }]
+      responses: { '200': { description: Approved } }
+
+  /admin/devices/{device}/revoke:
+    patch:
+      tags: [Admin]
+      summary: Revoke device approval and force logout
+      parameters: [{ name: device, in: path, required: true, schema: { type: integer } }]
+      responses: { '200': { description: Revoked } }
+
+  /admin/leaves:
+    get:
+      tags: [Admin]
+      summary: List all leave requests
+      responses: { '200': { description: OK } }
+
+  /admin/leaves/{leave}/review:
+    patch:
+      tags: [Admin]
+      summary: Final approval/rejection of a leave request
+      parameters: [{ name: leave, in: path, required: true, schema: { type: integer } }]
+      responses: { '200': { description: Reviewed } }
+
+  /admin/leave-types:
+    post:
+      tags: [Admin]
+      summary: Create a leave type
+      responses: { '201': { description: Created } }
+
+  /admin/departments:
+    post:
+      tags: [Admin]
+      summary: Create a department
+      responses: { '201': { description: Created } }
+
+  /admin/designations:
+    post:
+      tags: [Admin]
+      summary: Create a designation
+      responses: { '201': { description: Created } }
+
+  /admin/offices:
+    post:
+      tags: [Admin]
+      summary: Create an office/geofence location
+      responses: { '201': { description: Created } }
+
+  /admin/holidays:
+    post:
+      tags: [Admin]
+      summary: Create a company holiday
+      responses: { '201': { description: Created } }
+
+  /admin/attendance:
+    get:
+      tags: [Admin]
+      summary: Company-wide attendance for a single day (all employees, not just direct reports)
+      parameters:
+        - { name: date, in: query, schema: { type: string, format: date } }
+      responses: { '200': { description: OK } }
+
+  /admin/reports/attendance:
+    get:
+      tags: [Admin]
+      summary: Attendance report (filterable by date range/department)
+      responses: { '200': { description: OK } }
+
+  /admin/reports/leaves:
+    get:
+      tags: [Admin]
+      summary: Leave report (filterable by date range/status)
+      responses: { '200': { description: OK } }

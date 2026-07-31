@@ -1,0 +1,1819 @@
+{
+  "info": {
+    "name": "Attendance Management System API",
+    "description": "Postman collection for the Laravel 12 Attendance Management System REST API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api/v1"
+    },
+    {
+      "key": "auth_token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@attendance.app\",\n  \"password\": \"Password@123\",\n  \"device_id\": \"device-uuid-123\",\n  \"device_name\": \"Pixel 8\",\n  \"platform\": \"android\",\n  \"os_version\": \"14\",\n  \"app_version\": \"1.0.0\",\n  \"is_rooted_or_jailbroken\": false,\n  \"fcm_token\": \"sample-fcm-token\"\n}"
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Me",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/change-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "change-password"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current_password\": \"Password@123\",\n  \"new_password\": \"NewPassword@123\",\n  \"new_password_confirmation\": \"NewPassword@123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/forgot-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "forgot-password"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"employee@attendance.app\"\n}"
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/reset-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "reset-password"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"reset-token-from-email\",\n  \"email\": \"employee@attendance.app\",\n  \"password\": \"NewPassword@123\",\n  \"password_confirmation\": \"NewPassword@123\"\n}"
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "profile"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "profile"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sara Ali\",\n  \"phone\": \"+92 300 1234567\",\n  \"emergency_contact_name\": \"Ali Khan\",\n  \"emergency_contact_phone\": \"+92 300 7654321\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Avatar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/profile/avatar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "profile",
+                "avatar"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "avatar",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Register FCM Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/profile/fcm-token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "profile",
+                "fcm-token"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fcm_token\": \"sample-token\",\n  \"device_id\": \"device-uuid-123\",\n  \"platform\": \"android\"\n}"
+            }
+          }
+        },
+        {
+          "name": "My Devices",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/profile/devices",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "profile",
+                "devices"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Attendance",
+      "item": [
+        {
+          "name": "Time In",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/attendance/time-in",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "attendance",
+                "time-in"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "latitude",
+                  "value": "24.8607",
+                  "type": "text"
+                },
+                {
+                  "key": "longitude",
+                  "value": "67.0011",
+                  "type": "text"
+                },
+                {
+                  "key": "address",
+                  "value": "Head Office",
+                  "type": "text"
+                },
+                {
+                  "key": "device_id",
+                  "value": "device-uuid-123",
+                  "type": "text"
+                },
+                {
+                  "key": "device_name",
+                  "value": "Pixel 8",
+                  "type": "text"
+                },
+                {
+                  "key": "platform",
+                  "value": "android",
+                  "type": "text"
+                },
+                {
+                  "key": "os_version",
+                  "value": "14",
+                  "type": "text"
+                },
+                {
+                  "key": "app_version",
+                  "value": "1.0.0",
+                  "type": "text"
+                },
+                {
+                  "key": "is_rooted_or_jailbroken",
+                  "value": "false",
+                  "type": "text"
+                },
+                {
+                  "key": "is_mock_location",
+                  "value": "false",
+                  "type": "text"
+                },
+                {
+                  "key": "device_timestamp",
+                  "value": "2026-07-10T09:00:00Z",
+                  "type": "text"
+                },
+                {
+                  "key": "selfie",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Time Out",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/attendance/time-out",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "attendance",
+                "time-out"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "latitude",
+                  "value": "24.8607",
+                  "type": "text"
+                },
+                {
+                  "key": "longitude",
+                  "value": "67.0011",
+                  "type": "text"
+                },
+                {
+                  "key": "device_id",
+                  "value": "device-uuid-123",
+                  "type": "text"
+                },
+                {
+                  "key": "is_mock_location",
+                  "value": "false",
+                  "type": "text"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Today's Attendance",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/attendance/today",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "attendance",
+                "today"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Attendance History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/attendance/history",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "attendance",
+                "history"
+              ],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "2026-07-01"
+                },
+                {
+                  "key": "to",
+                  "value": "2026-07-31"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Attendance Calendar",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/attendance/calendar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "attendance",
+                "calendar"
+              ],
+              "query": [
+                {
+                  "key": "month",
+                  "value": "7"
+                },
+                {
+                  "key": "year",
+                  "value": "2026"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Leave Management",
+      "item": [
+        {
+          "name": "List Leave Types",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/leaves/types",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "leaves",
+                "types"
+              ]
+            }
+          }
+        },
+        {
+          "name": "My Leave Balance",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/leaves/balance",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "leaves",
+                "balance"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Apply for Leave",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/leaves",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "leaves"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "leave_type_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "start_date",
+                  "value": "2026-08-01",
+                  "type": "text"
+                },
+                {
+                  "key": "end_date",
+                  "value": "2026-08-03",
+                  "type": "text"
+                },
+                {
+                  "key": "reason",
+                  "value": "Family event",
+                  "type": "text"
+                },
+                {
+                  "key": "attachment",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "My Leave Requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/leaves",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "leaves"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Leave Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/leaves/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "leaves",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cancel Leave",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/leaves/1/cancel",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "leaves",
+                "1",
+                "cancel"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Attendance Regularization",
+      "item": [
+        {
+          "name": "Apply Regularization",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/regularizations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "regularizations"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "attendance_date",
+                  "value": "2026-07-08",
+                  "type": "text"
+                },
+                {
+                  "key": "requested_time_in",
+                  "value": "2026-07-08 09:00:00",
+                  "type": "text"
+                },
+                {
+                  "key": "requested_time_out",
+                  "value": "2026-07-08 18:00:00",
+                  "type": "text"
+                },
+                {
+                  "key": "reason",
+                  "value": "Forgot to mark time out",
+                  "type": "text"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "My Regularization Requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/regularizations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "regularizations"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "List Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Unread Count",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications/unread-count",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications",
+                "unread-count"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mark as Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications/{{notification_id}}/read",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications",
+                "{{notification_id}}",
+                "read"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mark All as Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications/read-all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications",
+                "read-all"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reference Data",
+      "item": [
+        {
+          "name": "Departments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/departments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "departments"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Designations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/designations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "designations"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Offices",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/offices",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "offices"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Holidays",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/holidays",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "holidays"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Employee Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/employee/dashboard",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "employee",
+                "dashboard"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Manager",
+      "item": [
+        {
+          "name": "Manager Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/manager/dashboard",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "manager",
+                "dashboard"
+              ]
+            }
+          }
+        },
+        {
+          "name": "My Team",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/manager/team",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "manager",
+                "team"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Team Attendance",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/manager/team-attendance",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "manager",
+                "team-attendance"
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2026-07-10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Team Leave Requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/manager/leaves",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "manager",
+                "leaves"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Review Leave Request",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/manager/leaves/1/review",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "manager",
+                "leaves",
+                "1",
+                "review"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"approve\",\n  \"remarks\": \"Approved\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Pending Regularizations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/manager/regularizations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "manager",
+                "regularizations"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Review Regularization",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/manager/regularizations/1/review",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "manager",
+                "regularizations",
+                "1",
+                "review"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"approve\",\n  \"remarks\": \"Verified\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Admin Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/dashboard",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "dashboard"
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Employees",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "role",
+                  "value": ""
+                },
+                {
+                  "key": "department_id",
+                  "value": ""
+                },
+                {
+                  "key": "status",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Employee",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "users"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employee_id\": \"EMP0010\",\n  \"name\": \"New Employee\",\n  \"email\": \"new.employee@attendance.app\",\n  \"phone\": \"+92 300 9999999\",\n  \"password\": \"Password@123\",\n  \"role\": \"employee\",\n  \"department_id\": 1,\n  \"designation_id\": 1,\n  \"manager_id\": 2,\n  \"office_id\": 1,\n  \"joining_date\": \"2026-07-10\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Employee",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/users/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Employee",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/users/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Disable Employee",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/users/1/disable",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "1",
+                "disable"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Enable Employee",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/users/1/enable",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "1",
+                "enable"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Assign Manager",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/users/1/assign-manager",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "1",
+                "assign-manager"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"manager_id\": 2\n}"
+            }
+          }
+        },
+        {
+          "name": "Assign Department",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/users/1/assign-department",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "1",
+                "assign-department"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"department_id\": 1,\n  \"designation_id\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Pending Devices",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/devices",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "devices"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Approve Device",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/devices/1/approve",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "devices",
+                "1",
+                "approve"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Revoke Device",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/devices/1/revoke",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "devices",
+                "1",
+                "revoke"
+              ]
+            }
+          }
+        },
+        {
+          "name": "All Leave Requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/leaves",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "leaves"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Admin Review Leave",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/leaves/1/review",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "leaves",
+                "1",
+                "review"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"approve\",\n  \"remarks\": \"Final approval\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Leave Type",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/leave-types",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "leave-types"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Paternity Leave\",\n  \"code\": \"PATERNITY\",\n  \"default_days_per_year\": 5,\n  \"requires_attachment\": false,\n  \"is_paid\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Department",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/departments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "departments"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Legal\",\n  \"code\": \"DEPT07\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Designation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/designations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "designations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Legal Counsel\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Office Location",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/offices",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "offices"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Branch Office - Lahore\",\n  \"address\": \"Gulberg\",\n  \"latitude\": 31.5204,\n  \"longitude\": 74.3587,\n  \"radius_meters\": 150\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Holiday",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/holidays",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "holidays"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Independence Day\",\n  \"date\": \"2026-08-14\",\n  \"is_recurring_yearly\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Attendance Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/reports/attendance",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "reports",
+                "attendance"
+              ],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "2026-07-01"
+                },
+                {
+                  "key": "to",
+                  "value": "2026-07-31"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Leave Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/reports/leaves",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "reports",
+                "leaves"
+              ],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "2026-01-01"
+                },
+                {
+                  "key": "to",
+                  "value": "2026-12-31"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
