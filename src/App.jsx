@@ -18,6 +18,8 @@ import ManagerDashboard from './pages/manager/ManagerDashboard';
 import TeamAttendance from './pages/manager/TeamAttendance';
 import ManagerLeaves from './pages/manager/Leaves';
 import Regularizations from './pages/manager/Regularizations';
+import ManagerEmployees from './pages/manager/Employees';
+import ManagerReports from './pages/manager/Reports';
 
 export default function App() {
   return (
@@ -42,8 +44,10 @@ export default function App() {
         <Route element={<DashboardLayout />}>
           <Route path="/manager" element={<ManagerDashboard />} />
           <Route path="/manager/team" element={<TeamAttendance />} />
+          <Route path="/manager/employees" element={<ManagerEmployees />} />
           <Route path="/manager/leaves" element={<ManagerLeaves />} />
           <Route path="/manager/regularizations" element={<Regularizations />} />
+          <Route path="/manager/reports" element={<ManagerReports />} />
         </Route>
       </Route>
 

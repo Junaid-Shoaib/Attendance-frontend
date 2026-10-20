@@ -20,8 +20,10 @@ const ADMIN_LINKS = [
 const MANAGER_LINKS = [
   { to: '/manager', label: 'Dashboard', icon: LayoutGrid, end: true },
   { to: '/manager/team', label: 'Team Attendance', icon: Users },
+  { to: '/manager/employees', label: 'Employees', icon: UserCircle },
   { to: '/manager/leaves', label: 'Leave Approvals', icon: FileText },
   { to: '/manager/regularizations', label: 'Corrections', icon: CalendarClock },
+  { to: '/manager/reports', label: 'Reports', icon: BarChart3 },
 ];
 
 export default function DashboardLayout() {
